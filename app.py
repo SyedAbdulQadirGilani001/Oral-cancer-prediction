@@ -38,7 +38,10 @@ from sklearn.model_selection import GridSearchCV # for hyperparameter tuning
 from imblearn.over_sampling import SMOTE
 
 
-
+# website logo
+logo = "https://raw.githubusercontent.com/krishnaik06/Deployment-flask/master/krishnaik.png"
+# website title
+st.set_page_config(page_title='Days to Death Oral Cancer Prediction', page_icon=logo)
 # title
 st.title("Days to Death Oral Cancer Prediction")
 # subtitle alive or death prediction
@@ -51,6 +54,11 @@ uploaded_file = st.file_uploader("Upload your input CSV file", type=["csv"])
 if uploaded_file is not None:
     # read the file
     df = pd.read_csv(uploaded_file)
+    # exposures/0/created_datetime index 1 set
+    df.set_index('exposures/0/created_datetime', inplace=True)
+    # remove None values in the dataset
+    df.dropna(axis=1, how='all', inplace=True)
+    # show the dataframe
     st.write('**First 5 rows of the dataset**')
     # show the dataframe
     st.write(df.head())
@@ -207,4 +215,3 @@ if uploaded_file is not None:
     sns.histplot(data=y_pred, ax=ax, label="Predicted", color="red")
     ax.legend()
     st.pyplot(fig)
-    
