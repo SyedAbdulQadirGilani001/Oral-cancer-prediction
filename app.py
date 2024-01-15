@@ -53,6 +53,8 @@ if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)
     # remove None values in the dataset
     df.dropna(axis=1, how='all', inplace=True)
+    # remove None rows,column in the dataset
+    df.dropna(axis=0, how='all', inplace=True)    
     # show the dataframe
     st.write('**First 5 rows of the dataset**')
     # show the dataframe
@@ -210,3 +212,19 @@ if uploaded_file is not None:
     sns.histplot(data=y_pred, ax=ax, label="Predicted", color="red")
     ax.legend()
     st.pyplot(fig)
+    # roc curve plot
+#     x=df[['diagnoses/0/ajcc_pathologic_stage', 'diagnoses/0/treatments/0/treatment_type','demographic/vital_status']]
+# # # y=df['demographic/days_to_death']
+# # # checking death rate, and survival rate
+    death_rate = df[df['demographic/vital_status'] == 'Dead'].shape[0] / df.shape[0]
+    survival_rate = df[df['demographic/vital_status'] == 'Alive'].shape[0] / df.shape[0]
+    st.write("**Percentage of Dead Patients:**")
+    st.write(str(death_rate * 100) + "%")
+    # percentage of Not Reported
+    st.write("**Percentage of Not Reported Patients:**")
+    st.write(str((1 - death_rate - survival_rate) * 100) + "%")
+    st.write("**Percentage of Alive Patients:**")
+    st.write(str(survival_rate * 100) + "%")
+    # sunburst plot of death rate and survival rate
+    fig = px.sunburst(df, path=['demographic/vital_status'], title="Alive or Death", width=600, height=600, color_discrete_sequence=['#1E90FF', '#FF4500'])
+    st.plotly_chart(fig)
